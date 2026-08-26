@@ -76,7 +76,7 @@ export default function ChatWidget() {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "qwen/qwen3.6-27b",
+          model: "openai/gpt-oss-20b",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             // Only send last 10 messages to stay within token limits
@@ -103,8 +103,11 @@ export default function ChatWidget() {
       }
 
       const data = await response.json();
-      const reply = data.choices?.[0]?.message?.content;
-      if (!reply) throw new Error("Empty response from Groq");
+      const raw = data.choices?.[0]?.message?.content;
+      if (!raw) throw new Error("Empty response from Groq");
+
+      // Strip <think>...</think> reasoning blocks some models emit
+      const reply = raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
 
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch (err) {
