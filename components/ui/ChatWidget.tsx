@@ -76,7 +76,7 @@ export default function ChatWidget() {
           Authorization: `Bearer ${GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama3-8b-8192",
+          model: "qwen/qwen3.6-27b",
           messages: [
             { role: "system", content: SYSTEM_PROMPT },
             // Only send last 10 messages to stay within token limits
